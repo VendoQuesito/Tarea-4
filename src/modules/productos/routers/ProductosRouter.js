@@ -66,8 +66,11 @@ router.patch('/:id', auth, async (req, res) => {
 
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const producto = await Producto.findOneAndDelete({ id: req.params.id });
+    const producto = await Producto.findOne({ id: req.params.id });
     if (!producto) return res.status(404).json({ mensaje: 'Producto no encontrado' });
+
+    producto.activo = false;
+    await producto.save();
 
     res.status(204).send();
   } catch (err) {
